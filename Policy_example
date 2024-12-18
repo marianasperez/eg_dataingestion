@@ -1,0 +1,5 @@
+{
+  "ArnLike": {
+    "AWS:SourceArn": "arn:aws:lambda:ap-southeast-2:619071316081:function:F1DataIngestion"
+  }
+}
