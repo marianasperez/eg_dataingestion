@@ -68,30 +68,22 @@ After the data has been processed by the **F1DataTransformation** and **F1_Stati
 This structured data is now available for further analysis, reporting, or future enhancements, such as integration with query tools or visualization platforms.
 - You can see the results under `S3 Bucket & Objects Results.png `
 
-## 7. Assumptions
+## 7. Role and Policy Management
+To ensure proper access between the various AWS services (such as Lambda, Glue, and S3), I created specific IAM roles with the necessary permissions. 
+These roles were designed to enable secure interactions between the services while maintaining the principle of least privilege. 
+For example, the Lambda function required permission to read from the API, write to S3, and trigger the Glue jobs. I configured a custom IAM policy called allow-eventbridge-to-invoke-lambda to allow EventBridge to trigger the Lambda function daily.
+Similarly, the AWS Glue jobs were granted access to read from the raw data in S3, process the data, and write the transformed data back to S3. These roles and policies were configured to ensure that only the necessary services could access specific resources, providing secure and controlled access between the applications.
 
-The transformation process from **JSON** to **Parquet**:
+- See `Policy_example` & `IAM Roles.png`
+  
+## 8. Assumptions
 
-1. **Improved Performance**:
-   - **Parquet** is a columnar storage format, meaning it stores data by columns instead of rows. This allows for more efficient queries, especially when only specific columns are needed. In contrast, **JSON** stores data in a row-based format, which can be slower for large datasets when only a subset of columns is required.
-
-2. **Better Compression**:
-   - **Parquet** is more efficient at compressing data compared to **JSON**, which results in reduced storage costs. This is especially beneficial when dealing with large datasets like F1 race data, as Parquet helps reduce the amount of disk space needed.
-
-3. **Schema Support**:
-   - **Parquet** files are schema-aware, ensuring the structure of the data is preserved. This makes the data easier to manage, maintain, and analyze. **JSON**, on the other hand, is a flexible format and lacks this level of schema enforcement, which can make it harder to ensure consistent data structure over time.
-
-4. **Optimized for Big Data Processing**:
-   - **Parquet** is designed to work efficiently in distributed data processing systems like **Apache Spark** and **AWS Glue**. These tools can process **Parquet** files in parallel, significantly improving the speed and efficiency of the ETL process, especially when handling large amounts of data.
-
-5. **Compatibility with Analytics Tools**:
-   - **Parquet** is natively supported by many analytics tools, including **AWS Athena**, **Presto**, **Apache Hive**, and **Tableau**. Storing data in Parquet format ensures compatibility with these tools, making it easier to query and analyze the data for further reporting and visualization.
-
-By converting the raw data into **Parquet**, the transformation process improves performance, reduces storage costs, and ensures the data is in a format optimized for future analysis and querying.
+- The architecture (Lambda, Glue, S3) is scalable and can handle increased data volumes if necessary.
+- The transformation process from **JSON** to **Parquet** was done to improve performance, reduce storage costs, and ensure the data is in a format optimized for future analysis and querying.
 
 
-## 8. Future Improvements
+## 9. Future Improvements
 
 - **Athena Integration**: In the future, use **AWS Athena** to query the Gold layer data directly from S3 for further analysis and reporting.
 - **Tableau Integration**: The processed F1 data can be integrated with **Tableau** for visualizations and dashboards to provide interactive insights into the F1 race data.
-- **Data Integrity**: Future improvements will include adding data validation to ensure the quality of the data.
+- **Data Integrity**:  While the F1DataTransformation and F1_Statistics_Job jobs handle basic transformations, the Data Quality function in AWS Glue Jobs could be used for more advanced data validation, such as checking for missing values, duplicates, or inconsistencies. However, due to the limitations of using a free version of AWS Glue, this feature was not utilized in this project. Future improvements could include integrating Data Quality to ensure better data integrity and validation during the ETL process.
