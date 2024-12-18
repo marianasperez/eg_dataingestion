@@ -81,9 +81,19 @@ Similarly, the AWS Glue jobs were granted access to read from the raw data in S3
 - The architecture (Lambda, Glue, S3) is scalable and can handle increased data volumes if necessary.
 - The transformation process from **JSON** to **Parquet** was done to improve performance, reduce storage costs, and ensure the data is in a format optimized for future analysis and querying.
 
-
 ## 9. Future Improvements
 
 - **Athena Integration**: In the future, use **AWS Athena** to query the Gold layer data directly from S3 for further analysis and reporting.
 - **Tableau Integration**: The processed F1 data can be integrated with **Tableau** for visualizations and dashboards to provide interactive insights into the F1 race data.
 - **Data Integrity**:  While the F1DataTransformation and F1_Statistics_Job jobs handle basic transformations, the Data Quality function in AWS Glue Jobs could be used for more advanced data validation, such as checking for missing values, duplicates, or inconsistencies. However, due to the limitations of using a free version of AWS Glue, this feature was not utilized in this project. Future improvements could include integrating Data Quality to ensure better data integrity and validation during the ETL process.
+
+## 10. Architecture Overview
+This data pipeline architecture uses a combination of AWS services to efficiently ingest, process, store, and analyze F1 race data. The pipeline involves several stages:
+
+1. **Data Ingestion**: Data is retrieved from the **F1 API**, which serves as the primary data source.
+2. **AWS Lambda**: The data is ingested into **AWS Lambda** for processing before being stored in **Amazon S3**.
+3. **Data Storage**: The raw data is stored in **S3 Raw Data**. 
+4. **Data Processing**: **AWS Glue** is used for transforming the Raw data data, first into a cleaned state (Silver) and then into a simplified, ready-for-analysis format (Gold). This data is cleaned and processed into **S3 Silver Data** and **S3 Gold Data** using **AWS Glue Jobs**.
+5. **Data Consumption**: The final data, stored in **S3 Gold Data** and  **S3 Silver Data**, is queried using **AWS Athena**. The results are then visualized and analyzed using **Analytics System** for insights and reporting.
+
+- You can see the results under `Data Architecture Design.png ` 
